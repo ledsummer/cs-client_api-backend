@@ -1,0 +1,47 @@
+version: "3.8"
+services:
+  nodejs:
+    container_name: "node-express"
+    build: ./node
+    hostname: nodeserver
+    restart: always
+    volumes:
+      - ./node:/app
+    ports:
+      - "3000:3000"
+    networks:
+      - cs-backend-app
+
+  nginx:
+    build:
+      context: ./nginx
+    container_name: nginx
+    hostname: nginx
+    restart: always
+    ports:
+      - "8080:80" 
+    depends_on:
+      - nodejs
+    networks:
+      - cs-backend-app
+      
+  # mongodb:
+  #  image: mongo:4.0-xenial
+  #  container_name: "mongodb"
+  #  restart: always
+  #  ports: 
+  #    - 27017:27017
+  #  environment:
+  #    DB_URL: mongodb//db/mymongo_dbd
+  #  volumes: 
+  #    - mymongo_db:/data/db
+  #  networks:
+  #   - container-for-flutter_default
+
+volumes:
+  mymongo_db:
+
+networks:
+  cs-backend-app:
+    external: true
+    driver: bridge

@@ -1,0 +1,30 @@
+{
+  "name": "cs-client_backend",
+  "version": "1.0.0",
+  "description": "The API Backend of Cooperative Systems Client",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Cris Rendoque",
+  "license": "MIT",
+  "dependencies": {
+    "@sentry/node": "^7.8.1",
+    "@sentry/tracing": "^7.8.1",
+    "axios": "^0.21.4",
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "generate-schema": "^2.6.0",
+    "jsonwebtoken": "^8.5.1",
+    "moment": "^2.29.4",
+    "mongodb": "^4.8.0",
+    "mongoose": "^6.4.6",
+    "nodemailer": "^6.7.8"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.19"
+  }
+}
