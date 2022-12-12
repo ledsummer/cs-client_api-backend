@@ -8,6 +8,7 @@ module.exports.formatName =  function capitalizeName(name) {
  }
 
 
+
 //format currency to standard
 module.exports.formatToCurrencyPHP =  function formatCurrency(amount) {
    const formatted = amount.toFixed(2).replace(/(\d)(?=(\d{3})+\b)/g, '$1,');

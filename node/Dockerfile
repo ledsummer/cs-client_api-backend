@@ -4,6 +4,8 @@ WORKDIR /app
 
 COPY package*.json ./
 
+COPY . /app
+
 RUN npm install
 
 #RUN npm ci --only=production

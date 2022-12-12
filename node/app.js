@@ -13,9 +13,13 @@ app.use(express.json());
 const routes = require('./routes/routes');
 const otpRoute = require('./routes/otp');
 const auth = require('./middleware/auth');
+const caisRoute = require('./routes/cais');
+const risRoute = require('./routes/ris');
 
 app.use('/', routes);
 app.use('/otp', otpRoute);
+app.use('/cais', caisRoute);
+app.use('/ris', risRoute);
 
 app.get("/",  (req, res) => {
   res.status(200).send("Cooperative System: Client API Backend is now running. . .");
