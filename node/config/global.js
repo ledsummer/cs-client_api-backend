@@ -84,3 +84,13 @@ module.exports.formatToCurrencyUSD =  function ConvertCurrency(amount) {
       }
   });
  }
+
+ module.exports.getIp = function getIP(req) {
+  const publicIp = req.headers['x-forwarded-for'] || req.connection.remoteAddress
+  return publicIp; 
+ }
+
+ module.exports.zeroHandler = function convert(n) {
+  const safeNumber = n || 0;
+  return safeNumber;
+ }

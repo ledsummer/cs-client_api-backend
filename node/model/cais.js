@@ -7,6 +7,7 @@ const capr_schema = new mongoose.Schema({
     reg_no: String,
     report_year: { type: Number, min:2021, max: 9999 },
     submit_status: { type: Boolean, default: true},
+    date_submitted: { type: Date, default: () => moment().toDate() }, 
     general_info: { 
         business_permit: String,
         tax_id_no: String,
@@ -89,5 +90,117 @@ const capr_schema = new mongoose.Schema({
 });
 const capr = mongoose.model("capr", capr_schema);
 
+const cafs_schema = new mongoose.Schema({
+    reg_no: String,
+    report_year: { type: Number, min:2021, max: 9999 },
+    submit_status: { type: Boolean, default: true},
+    date_submitted: { type: Date, default: () => moment().toDate() }, 
+    afs_audited_by: Number,
+    other_auditors: { type: Array, default: null},
+    statement_financial_condition: {
+        assets: {
+            current_assets: {
+                cash_cash_equivalent: { type: Number, decimal: true, integer: false, default: null  },
+                loans_receivables: { type: Number, decimal: true, integer: false, default: null  },
+                financial_assets: { type: Number, decimal: true, integer: false, default: null  },
+                inventories: { type: Number, decimal: true, integer: false, default: null  },
+                biological_assets: { type: Number, decimal: true, integer: false, default: null  },
+                other_current_assets: { type: Number, decimal: true, integer: false, default: null  },
+                total_current_assets: { type: Number, decimal: true, integer: false, default: null  }
+            },
+            non_current_assets: {
+                financial_asset_long_term: { type: Number, decimal: true, integer: false, default: null  },
+                investment_subsidaries: { type: Number, decimal: true, integer: false, default: null  },
+                investment_associates: { type: Number, decimal: true, integer: false, default: null  },
+                investment_joint_venture: { type: Number, decimal: true, integer: false, default: null  },
+                investment_property: { type: Number, decimal: true, integer: false, default: null  },
+                property_plant_equipment: { type: Number, decimal: true, integer: false, default: null  },
+                biological_assets: { type: Number, decimal: true, integer: false, default: null  },
+                intangible_assets: { type: Number, decimal: true, integer: false, default: null  },
+                other_non_current_assets: { type: Number, decimal: true, integer: false, default: null  },
+                total_non_current_assets: { type: Number, decimal: true, integer: false, default: null  }
+            }
+        },
+        liabilities: {
+            current_liabilities: {
+                deposit_liabilities: { type: Number, decimal: true, integer: false, default: null  },
+                trade_other_payables: { type: Number, decimal: true, integer: false, default: null  },
+                accrued_expenses: { type: Number, decimal: true, integer: false, default: null  },
+                other_current_liabilities: { type: Number, decimal: true, integer: false, default: null  },
+                total_current_liabilities: { type: Number, decimal: true, integer: false, default: null  },
+            },
+            non_current_liabilities: {
+                loans_payable: { type: Number, decimal: true, integer: false, default: null  },
+                bonds_payable: { type: Number, decimal: true, integer: false, default: null  },
+                revolving_capital_payable: { type: Number, decimal: true, integer: false, default: null  },
+                retirement_fund_payable: { type: Number, decimal: true, integer: false, default: null  },
+                finance_lease_payable_longterm: { type: Number, decimal: true, integer: false, default: null  },
+                other_non_current_liabilities: { type: Number, decimal: true, integer: false, default: null  },
+                total_non_current_liabilities: { type: Number, decimal: true, integer: false, default: null  },
+            }
 
-module.exports = { Cais: capr }
+        },
+        members_equity: {
+            paidup_capital_common: { type: Number, decimal: true, integer: false, default: null  },
+            paidup_capital_preferred: { type: Number, decimal: true, integer: false, default: null  },
+            deposit_share_capital_sub: { type: Number, decimal: true, integer: false, default: null  },
+            retained_earnings_restricted: { type: Number, decimal: true, integer: false, default: null  },
+            surplus_free: { type: Number, decimal: true, integer: false, default: null  },
+            statutory_funds: { type: Number, decimal: true, integer: false, default: null  },
+            donations_grants: { type: Number, decimal: true, integer: false, default: null  },
+            revaluation_surplus: { type: Number, decimal: true, integer: false, default: null  },
+            reinvestment_fund_sustainable_capex: { type: Number, decimal: true, integer: false, default: null  },
+            total_members_equity: { type: Number, decimal: true, integer: false, default: null  },
+        },
+        total_assets: { type: Number, decimal: true, integer: false, default: null  },
+        total_liabilities: { type: Number, decimal: true, integer: false, default: null  },
+        total_liabilities_members_equity: { type: Number, decimal: true, integer: false, default: null  }, 
+    },
+    statement_operation: {
+        revenues: {
+            income_credit_operations: { type: Number, decimal: true, integer: false, default: null  },
+            income_service_operations: { type: Number, decimal: true, integer: false, default: null  },
+            income_marketing_operations: { type: Number, decimal: true, integer: false, default: null  },
+            income_consumer_catering_operations: { type: Number, decimal: true, integer: false, default: null  },
+            income_product_operations: { type: Number, decimal: true, integer: false, default: null  },
+            other_income: { type: Number, decimal: true, integer: false, default: null  },
+            total_revenues: { type: Number, decimal: true, integer: false, default: null  },
+        },
+        expenses: {
+            financial_cost: { type: Number, decimal: true, integer: false, default: null  },
+            selling_marketing_cost: { type: Number, decimal: true, integer: false, default: null  },
+            administrative_cost: { type: Number, decimal: true, integer: false, default: null  },
+            total_expenses: { type: Number, decimal: true, integer: false, default: null  },
+        },
+        net_surplus_before_other_items: { type: Number, decimal: true, integer: false, default: null  },
+        other_items: { type: Number, decimal: true, integer: false, default: null  },
+        net_surplus: { type: Number, decimal: true, integer: false, default: null  },
+        less_income_tax_due: { type: Number, decimal: true, integer: false, default: null  },
+        net_surplus_for_allocation: { type: Number, decimal: true, integer: false, default: null  },
+        allocation: {
+            reserve_fund: {
+                percnt_net_surpus: { type: Number, default: null  },
+                amount: { type: Number, decimal: true, integer: false, default: null  },
+            },
+            coop_educ_training_fund: {
+                cetf_local: {
+                    percnt_net_surpus: { type: Number, default: null  },
+                    amount: { type: Number, decimal: true, integer: false, default: null  },
+                },
+                due_to_cetf: {
+                    percnt_net_surpus: { type: Number,  default: null  },
+                    amount: { type: Number, decimal: true, integer: false, default: null  },
+                }
+            },
+            community_dev_fund: { type: Number, decimal: true, integer: false, default: null  },
+            optional_fund: { type: Number, decimal: true, integer: false, default: null  },
+            total_statutory_reserve: { type: Number, decimal: true, integer: false, default: null  },
+            interest_share_capital: { type: Number, decimal: true, integer: false, default: null  },
+            patronage_refund: { type: Number, decimal: true, integer: false, default: null  },
+            total: { type: Number, decimal: true, integer: false, default: null  }
+        }
+    }
+});
+const cafs = mongoose.model("cafs", cafs_schema);
+
+module.exports = { Capr: capr, Cafs: cafs  }
