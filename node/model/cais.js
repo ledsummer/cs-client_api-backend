@@ -179,21 +179,35 @@ const cafs_schema = new mongoose.Schema({
         net_surplus_for_allocation: { type: Number, decimal: true, integer: false, default: null  },
         allocation: {
             reserve_fund: {
-                percnt_net_surpus: { type: Number, default: null  },
+                percnt_net_surpus: { type: String,
+                    required: true,
+                    validate: {
+                      validator: function(value) {
+                        return /^\d+(?:\.\d+)?%$/.test(value);
+                      },
+                      message: '{VALUE} is not a valid percentage'
+                    },
+                     default: null  },
                 amount: { type: Number, decimal: true, integer: false, default: null  },
             },
             coop_educ_training_fund: {
                 cetf_local: {
-                    percnt_net_surpus: { type: Number, default: null  },
+                    percnt_net_surpus: { type: String, default: null  },
                     amount: { type: Number, decimal: true, integer: false, default: null  },
                 },
                 due_to_cetf: {
-                    percnt_net_surpus: { type: Number,  default: null  },
+                    percnt_net_surpus: { type: String,  default: null  },
                     amount: { type: Number, decimal: true, integer: false, default: null  },
                 }
             },
-            community_dev_fund: { type: Number, decimal: true, integer: false, default: null  },
-            optional_fund: { type: Number, decimal: true, integer: false, default: null  },
+            community_dev_fund: {
+                percnt_net_surpus: { type: String, default: null  },
+                amount: { type: Number, decimal: true, integer: false, default: null  },
+            },
+            optional_fund: {
+                    percnt_net_surpus: { type: String, default: null  },
+                    amount: { type: Number, decimal: true, integer: false, default: null  },
+                },
             total_statutory_reserve: { type: Number, decimal: true, integer: false, default: null  },
             interest_share_capital: { type: Number, decimal: true, integer: false, default: null  },
             patronage_refund: { type: Number, decimal: true, integer: false, default: null  },

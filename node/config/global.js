@@ -8,6 +8,12 @@ module.exports.formatName =  function capitalizeName(name) {
  }
 
 
+ //format remove symbol replace it by space
+module.exports.removeSymbols =  function formatName(name) {
+  return name.replace(/[^a-zA-Z0-9 ]/g, " ");
+}
+
+
 
 //format currency to standard
 module.exports.formatToCurrencyPHP =  function formatCurrency(amount) {
@@ -94,3 +100,18 @@ module.exports.formatToCurrencyUSD =  function ConvertCurrency(amount) {
   const safeNumber = n || 0;
   return safeNumber;
  }
+
+ module.exports.percentageValue = function convert(n) {
+  const safeNumber = n || 0;
+  const percentage = parseFloat(safeNumber) / 100;
+  return percentage;
+ }
+
+ module.exports.addAnything = function convert(...values) {
+  let result = 0;
+  for (const value of values) {
+    result += value;
+  }
+  return Number(result.toFixed(2));
+ }
+
