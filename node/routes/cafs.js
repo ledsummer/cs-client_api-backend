@@ -41,7 +41,7 @@ router.post("/report", async (req, res) => {
            } else{
             
                 // create a new object with the safe numbers from the request body
-                const safeNumbers = await {
+                const safeNumbers =  {
                     cash_cash_equivalent: format.zeroHandler(cash_cash_equivalent),
                     loans_receivables: format.zeroHandler(loans_receivables),
                     financial_assets: format.zeroHandler(financial_assets),
@@ -109,7 +109,7 @@ router.post("/report", async (req, res) => {
                 const total_members_equity = await safeNumbers.paidup_capital_common + safeNumbers.paidup_capital_preferred + safeNumbers.deposit_share_capital_sub + safeNumbers.retained_earnings_restricted + safeNumbers.surplus_free + safeNumbers.statutory_funds + safeNumbers.donations_grants + safeNumbers.revaluation_surplus + safeNumbers.reinvestment_fund_sustainable_capex;
 
                 // convert the array of key-value pairs to an object with a nested structure
-                const statement_financial_condition = await  {
+                const statement_financial_condition =  {
                     assets: {
                         current_assets: {
                         cash_cash_equivalent: safeNumbers.cash_cash_equivalent,
@@ -172,9 +172,9 @@ router.post("/report", async (req, res) => {
 
                 const totalExpenses = await safeNumbers.financial_cost + safeNumbers.selling_marketing_cost + safeNumbers.administrative_cost;
 
-                const totalStatutory = await (safeNumbers.net_surplus_for_allocation*safeNumbers.reserve_fund)+(safeNumbers.net_surplus_for_allocation*safeNumbers.cetf_local)+(safeNumbers.net_surplus_for_allocation*safeNumbers.due_to_cetf)+(safeNumbers.net_surplus_for_allocation*safeNumbers.community_dev_fund)+(safeNumbers.net_surplus_for_allocation*safeNumbers.optional_fund);
+                const totalStatutory = (safeNumbers.net_surplus_for_allocation * safeNumbers.reserve_fund)+(safeNumbers.net_surplus_for_allocation*safeNumbers.cetf_local)+(safeNumbers.net_surplus_for_allocation*safeNumbers.due_to_cetf)+(safeNumbers.net_surplus_for_allocation*safeNumbers.community_dev_fund)+(safeNumbers.net_surplus_for_allocation*safeNumbers.optional_fund);
 
-                const statement_operation = await {
+                const statement_operation = {
                     revenues: {
                         income_credit_operations: safeNumbers.income_credit_operations,
                         income_service_operations: safeNumbers.income_service_operations,
@@ -190,40 +190,39 @@ router.post("/report", async (req, res) => {
                         administrative_cost: safeNumbers.administrative_cost,
                         total_expenses: totalExpenses
                     },
-                    net_surplus_before_other_items: safeNumbers.net_surplus_before_other_items, 
-                    other_items: safeNumbers.other_items, 
-                    net_surplus: safeNumbers.net_surplus, 
-                    less_income_tax_due: safeNumbers.less_income_tax_due, 
+                    net_surplus_before_other_items: safeNumbers.net_surplus_before_other_items,
+                    other_items: safeNumbers.other_items,
+                    net_surplus: safeNumbers.net_surplus,
+                    less_income_tax_due: safeNumbers.less_income_tax_due,
                     net_surplus_for_allocation: safeNumbers.net_surplus_for_allocation,
                     allocation: {
                         reserve_fund: {
                             percnt_net_surpus: reserve_fund,
-                            amount: Math.round(safeNumbers.net_surplus_for_allocation*safeNumbers.reserve_fund)
+                            amount: Math.round(safeNumbers.net_surplus_for_allocation * safeNumbers.reserve_fund)
                         },
                         coop_educ_training_fund: {
                             cetf_local: {
-                              percnt_net_surpus: cetf_local,
-                              amount: Math.round(safeNumbers.net_surplus_for_allocation*safeNumbers.cetf_local)
+                                percnt_net_surpus: cetf_local,
+                                amount: Math.round(safeNumbers.net_surplus_for_allocation * safeNumbers.cetf_local)
                             },
                             due_to_cetf: {
-                              percnt_net_surpus: due_to_cetf,
-                              amount: Math.round(safeNumbers.net_surplus_for_allocation*safeNumbers.due_to_cetf)
+                                percnt_net_surpus: due_to_cetf,
+                                amount: Math.round(safeNumbers.net_surplus_for_allocation * safeNumbers.due_to_cetf)
                             }
-                          },
+                        },
                         community_dev_fund: {
                             percnt_net_surpus: community_dev_fund,
-                            amount: Math.round(safeNumbers.net_surplus_for_allocation*safeNumbers.community_dev_fund)
+                            amount: Math.round(safeNumbers.net_surplus_for_allocation * safeNumbers.community_dev_fund)
                         },
                         optional_fund: {
                             percnt_net_surpus: optional_fund,
-                            amount: Math.round(safeNumbers.net_surplus_for_allocation*safeNumbers.optional_fund)
+                            amount: Math.round(safeNumbers.net_surplus_for_allocation * safeNumbers.optional_fund)
                         },
                         total_statutory_reserve: totalStatutory.toFixed(2),
                         interest_share_capital: safeNumbers.interest_share_capital,
                         patronage_refund: safeNumbers.patronage_refund,
-                        total: Math.round(totalStatutory+safeNumbers.interest_share_capital+safeNumbers.patronage_refund)
+                        total: Math.round(totalStatutory + safeNumbers.interest_share_capital + safeNumbers.patronage_refund)
                     }
-
                 }
                 
                 // save CAPR in our database
@@ -299,7 +298,7 @@ router.put("/report/:reg_no/:report_year", async (req, res) => {
         } else {
            // Validate if capr exist in our database
             // create a new object with the safe numbers from the request body
-            const safeNumbers = await {
+            const safeNumbers = {
                 cash_cash_equivalent: format.zeroHandler(cash_cash_equivalent),
                 loans_receivables: format.zeroHandler(loans_receivables),
                 financial_assets: format.zeroHandler(financial_assets),
@@ -315,24 +314,24 @@ router.put("/report/:reg_no/:report_year", async (req, res) => {
                 non_biological_assets: format.zeroHandler(non_biological_assets),
                 intangible_assets: format.zeroHandler(intangible_assets),
                 other_non_current_assets: format.zeroHandler(other_non_current_assets),
-                deposit_liabilities: format.zeroHandler(deposit_liabilities), 
-                trade_other_payables: format.zeroHandler(trade_other_payables), 
-                accrued_expenses: format.zeroHandler(accrued_expenses), 
-                other_current_liabilities: format.zeroHandler(other_current_liabilities), 
-                loans_payable: format.zeroHandler(loans_payable), 
-                bonds_payable: format.zeroHandler(bonds_payable), 
-                revolving_capital_payable: format.zeroHandler(revolving_capital_payable), 
-                retirement_fund_payable: format.zeroHandler(retirement_fund_payable), 
-                finance_lease_payable_longterm: format.zeroHandler(finance_lease_payable_longterm), 
+                deposit_liabilities: format.zeroHandler(deposit_liabilities),
+                trade_other_payables: format.zeroHandler(trade_other_payables),
+                accrued_expenses: format.zeroHandler(accrued_expenses),
+                other_current_liabilities: format.zeroHandler(other_current_liabilities),
+                loans_payable: format.zeroHandler(loans_payable),
+                bonds_payable: format.zeroHandler(bonds_payable),
+                revolving_capital_payable: format.zeroHandler(revolving_capital_payable),
+                retirement_fund_payable: format.zeroHandler(retirement_fund_payable),
+                finance_lease_payable_longterm: format.zeroHandler(finance_lease_payable_longterm),
                 other_non_current_liabilities: format.zeroHandler(other_non_current_liabilities),
-                paidup_capital_common: format.zeroHandler(paidup_capital_common), 
-                paidup_capital_preferred: format.zeroHandler(paidup_capital_preferred), 
-                deposit_share_capital_sub: format.zeroHandler(deposit_share_capital_sub), 
-                retained_earnings_restricted: format.zeroHandler(retained_earnings_restricted), 
-                surplus_free: format.zeroHandler(surplus_free), 
-                statutory_funds: format.zeroHandler(statutory_funds), 
-                donations_grants: format.zeroHandler(donations_grants), 
-                revaluation_surplus: format.zeroHandler(revaluation_surplus), 
+                paidup_capital_common: format.zeroHandler(paidup_capital_common),
+                paidup_capital_preferred: format.zeroHandler(paidup_capital_preferred),
+                deposit_share_capital_sub: format.zeroHandler(deposit_share_capital_sub),
+                retained_earnings_restricted: format.zeroHandler(retained_earnings_restricted),
+                surplus_free: format.zeroHandler(surplus_free),
+                statutory_funds: format.zeroHandler(statutory_funds),
+                donations_grants: format.zeroHandler(donations_grants),
+                revaluation_surplus: format.zeroHandler(revaluation_surplus),
                 reinvestment_fund_sustainable_capex: format.zeroHandler(reinvestment_fund_sustainable_capex),
                 income_credit_operations: format.zeroHandler(income_credit_operations),
                 income_service_operations: format.zeroHandler(income_service_operations),
@@ -343,16 +342,16 @@ router.put("/report/:reg_no/:report_year", async (req, res) => {
                 financial_cost: format.zeroHandler(financial_cost),
                 selling_marketing_cost: format.zeroHandler(selling_marketing_cost),
                 administrative_cost: format.zeroHandler(administrative_cost),
-                net_surplus_before_other_items: format.zeroHandler(net_surplus_before_other_items), 
-                other_items, net_surplus: format.zeroHandler(net_surplus), 
-                less_income_tax_due: format.zeroHandler(less_income_tax_due), 
+                net_surplus_before_other_items: format.zeroHandler(net_surplus_before_other_items),
+                other_items, net_surplus: format.zeroHandler(net_surplus),
+                less_income_tax_due: format.zeroHandler(less_income_tax_due),
                 net_surplus_for_allocation: format.zeroHandler(net_surplus_for_allocation),
                 reserve_fund: format.percentageValue(reserve_fund),
                 cetf_local: format.percentageValue(cetf_local),
                 due_to_cetf: format.percentageValue(due_to_cetf),
-                community_dev_fund: format.percentageValue(community_dev_fund), 
+                community_dev_fund: format.percentageValue(community_dev_fund),
                 optional_fund: format.percentageValue(optional_fund),
-                interest_share_capital: format.zeroHandler(interest_share_capital), 
+                interest_share_capital: format.zeroHandler(interest_share_capital),
                 patronage_refund: format.zeroHandler(patronage_refund)
             };
             

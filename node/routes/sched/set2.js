@@ -71,7 +71,7 @@ const checkSchedule = (reg_no, report_year, schedule_name, schedule, res, req) =
 // CHECK SCHEDULE ARRAY FOR NULL VALUE -- END
 
 
-//-- SUBMIT SCHEDULE 1 START--
+//-- SUBMIT SCHEDULE 7 START--
 router.post("/sched/7", async (req, res) => {
   // Our submit capr logic starts here
   // Get capr input data
@@ -150,28 +150,13 @@ router.post("/sched/7", async (req, res) => {
   }
   // Our logic ends here
 });
-//-- SUBMIT SCHEDULE 1 END--
+//-- SUBMIT SCHEDULE 7 END--
 
-//-- SUBMIT SCHEDULE 2 START--
+//-- SUBMIT SCHEDULE 8 START--
 router.post("/sched/8", async (req, res) => {
-  // Our submit capr logic starts here
-  // Get capr input data
-  const { reg_no, report_year, 
-  land_balance_beg,
-  land_additions,
-  land_disposal,
-  land_impairment_loss,
-  land_accumulated_depreciation,
-  bldg_balance_beg,
-  bldg_additions,
-  bldg_disposal,
-  bldg_impairment_loss,
-  bldg_accumulated_depreciation,
-  ropa_balance_beg,
-  ropa_additions,
-  ropa_disposal,
-  ropa_impairment_loss,
-  ropa_accumulated_depreciation } = req.body;
+
+  // Get schedule input data
+  const { reg_no, report_year, invest_land_value, invest_building_value, ropa_value, } = req.body;
 
   try {
     // Validate capr input
@@ -180,83 +165,34 @@ router.post("/sched/8", async (req, res) => {
       res.status(200).json(format.apiResponse("error", "Please provide input.", obj));
     } else {
 
-      // create a new object with the safe numbers from the request body
-      const safeNumbers = {
-        land_balance_beg: format.zeroHandler(land_balance_beg),
-        land_additions: format.zeroHandler(land_additions),
-        land_disposal: format.zeroHandler(land_disposal),
-        land_impairment_loss: format.zeroHandler(land_impairment_loss),
-        land_accumulated_depreciation: format.zeroHandler(land_accumulated_depreciation),
-        bldg_balance_beg: format.zeroHandler(bldg_balance_beg),
-        bldg_additions: format.zeroHandler(bldg_additions),
-        bldg_disposal: format.zeroHandler(bldg_disposal),
-        bldg_impairment_loss: format.zeroHandler(bldg_impairment_loss),
-        bldg_accumulated_depreciation: format.zeroHandler(bldg_accumulated_depreciation),
-        ropa_balance_beg: format.zeroHandler(ropa_balance_beg),
-        ropa_additions: format.zeroHandler(ropa_additions),
-        ropa_disposal: format.zeroHandler(ropa_disposal),
-        ropa_impairment_loss: format.zeroHandler(ropa_impairment_loss),
-        ropa_accumulated_depreciation : format.zeroHandler(ropa_accumulated_depreciation)
+      const invest_land = objectFormat.calculateObj(invest_land_value);
+      const invest_building = objectFormat.calculateObj(invest_building_value);
+      const ropa = objectFormat.calculateObj(ropa_value);
+
+      const valueVariables = [ invest_land, invest_building, ropa ];
+
+      const total_invest_property = {
+        balance_beg: 0,
+        additions: 0,
+        disposal: 0,
+        total: 0,
+        impairment_loss: 0,
+        accumulated_depreciation: 0,
+        balance_end: 0,
       };
 
-      const land_total = format.addAnything(safeNumbers.land_balance_beg, safeNumbers.land_additions) - safeNumbers.land_disposal;
-      const land_balance_end = land_total - safeNumbers.land_impairment_loss - safeNumbers.land_accumulated_depreciation;
 
-      const bldg_total = format.addAnything(safeNumbers.bldg_balance_beg, safeNumbers.bldg_additions) - safeNumbers.bldg_disposal;
-      const bldg_balance_end = bldg_total - safeNumbers.bldg_impairment_loss - safeNumbers.bldg_accumulated_depreciation;
-
-      const ropa_total = format.addAnything(safeNumbers.ropa_balance_beg, safeNumbers.ropa_additions) - safeNumbers.ropa_disposal;
-      const ropa_balance_end = ropa_total - safeNumbers.ropa_impairment_loss - safeNumbers.ropa_accumulated_depreciation;
-
-      const total_beg = format.addAnything(safeNumbers.land_balance_beg, safeNumbers.bldg_balance_beg, safeNumbers.ropa_balance_beg);
-      const total_add = format.addAnything(safeNumbers.land_additions, safeNumbers.bldg_additions, safeNumbers.ropa_additions);
-      const total_disposal = format.addAnything(safeNumbers.land_disposal, safeNumbers.bldg_disposal, safeNumbers.ropa_disposal);
-      const total_total = format.addAnything(land_total, bldg_total, ropa_total);
-      const total_impairment = format.addAnything(safeNumbers.land_impairment_loss, safeNumbers.bldg_impairment_loss, safeNumbers.ropa_impairment_loss);
-      const total_accu = format.addAnything(safeNumbers.land_accumulated_depreciation, safeNumbers.bldg_accumulated_depreciation, safeNumbers.ropa_accumulated_depreciation);
-      const total_end = format.addAnything(land_balance_end, bldg_balance_end, ropa_balance_end);
-
-
-
-      // convert the array of key-value pairs to an object with a nested structure
-      const schedule_8 = await {
-        invest_land: {
-          balance_beg: safeNumbers.land_balance_beg,
-          additions: safeNumbers.land_additions,
-          disposal: safeNumbers.land_disposal,
-          total: Number(land_total.toFixed(2)),
-          impairment_loss: safeNumbers.land_impairment_loss,
-          accumulated_depreciation: safeNumbers.land_accumulated_depreciation,
-          balance_end: Number(land_balance_end.toFixed(2))
-        },
-        invest_building: {
-          balance_beg: safeNumbers.bldg_balance_beg,
-          additions: safeNumbers.bldg_additions,
-          disposal: safeNumbers.bldg_disposal,
-          total: Number(bldg_total.toFixed(2)),
-          impairment_loss: safeNumbers.bldg_impairment_loss,
-          accumulated_depreciation: safeNumbers.bldg_accumulated_depreciation,
-          balance_end: Number(bldg_balance_end.toFixed(2))
-        },
-        ropa: {
-          balance_beg: safeNumbers.ropa_balance_beg,
-          additions: safeNumbers.ropa_additions,
-          disposal: safeNumbers.ropa_disposal,
-          total: Number(ropa_total.toFixed(2)),
-          impairment_loss: safeNumbers.ropa_impairment_loss,
-          accumulated_depreciation: safeNumbers.ropa_accumulated_depreciation,
-          balance_end: Number(ropa_balance_end.toFixed(2))
-        },
-        total_invest_property: {
-          balance_beg: Number(total_beg.toFixed(2)),
-          additions: Number(total_add.toFixed(2)),
-          disposal: Number(total_disposal.toFixed(2)),
-          total: Number(total_total.toFixed(2)),
-          impairment_loss: Number(total_impairment.toFixed(2)),
-          accumulated_depreciation: Number(total_accu.toFixed(2)),
-          balance_end: Number(total_end.toFixed(2))
-        }
+      for (const value of valueVariables) {
+        total_invest_property.balance_beg += value.balance_beg;
+        total_invest_property.additions += value.additions;
+        total_invest_property.disposal += value.disposal;
+        total_invest_property.total += value.total;
+        total_invest_property.impairment_loss += value.impairment_loss;
+        total_invest_property.accumulated_depreciation += value.accumulated_depreciation;
+        total_invest_property.balance_end += value.balance_end;
       }
+
+      const schedule_8 = { invest_land, invest_building, ropa, total_invest_property };
 
       // Validate if schedule exist in our database and update data
       checkSchedule(reg_no, report_year, 'schedule_8', schedule_8, res, req);
@@ -269,13 +205,13 @@ router.post("/sched/8", async (req, res) => {
   }
   // Our logic ends here
 });
-//-- SUBMIT SCHEDULE 2 END--
+//-- SUBMIT SCHEDULE 8 END--
 
-//-- SUBMIT SCHEDULE 3 START--
-router.post("/sched/3", async (req, res) => {
+//-- SUBMIT SCHEDULE 9 START--
+router.post("/sched/9", async (req, res) => {
   // Our submit capr logic starts here
   // Get capr input data
-  const { reg_no, report_year, financial_alue_profit_loss, financial_asset_cost } = req.body;
+  const { reg_no, report_year, land_value,  land_improvements_value, building_improvements_value, building_leased_land_value, utility_plant_value, prop_plant_equip_under_finance_value, ffe_value, mte_value, kitchen_canteen_catering_equip_value, transpo_equip_value, linens_uniforms_value, nursery_greenhouse_value, leashold_rights_improvements_value, construction_progress_value, other_property_plant_equip_value } = req.body;
 
   try {
     // Validate capr input
@@ -284,23 +220,50 @@ router.post("/sched/3", async (req, res) => {
       res.status(200).json(format.apiResponse("error", "Please provide input.", obj));
     } else {
 
-      // create a new object with the safe numbers from the request body
-      const safeNumbers = {
-        financial_alue_profit_loss: format.zeroHandler(financial_alue_profit_loss),
-        financial_asset_cost: format.zeroHandler(financial_asset_cost),
+      const land_improvements = objectFormat.calculateObj(land_improvements_value);
+      const land = objectFormat.calculateObj(land_value);
+      const building_improvements = objectFormat.calculateObj(building_improvements_value);
+      const building_leased_land = objectFormat.calculateObj(building_leased_land_value);
+      const utility_plant = objectFormat.calculateObj(utility_plant_value);
+      const prop_plant_equip_under_finance = objectFormat.calculateObj(prop_plant_equip_under_finance_value);
+      const ffe = objectFormat.calculateObj(ffe_value);
+      const mte = objectFormat.calculateObj(mte_value);
+      const kitchen_canteen_catering_equip = objectFormat.calculateObj(kitchen_canteen_catering_equip_value);
+      const transpo_equip = objectFormat.calculateObj(transpo_equip_value);
+      const linens_uniforms = objectFormat.calculateObj(linens_uniforms_value);
+      const nursery_greenhouse = objectFormat.calculateObj(nursery_greenhouse_value);
+      const leashold_rights_improvements = objectFormat.calculateObj(leashold_rights_improvements_value);
+      const construction_progress = objectFormat.calculateObj(construction_progress_value);
+      const other_property_plant_equip = objectFormat.calculateObj(other_property_plant_equip_value);
+
+      const valueVariables = [  land_improvements,  land,  building_improvements,  building_leased_land,  utility_plant,  prop_plant_equip_under_finance,  ffe,  mte,  kitchen_canteen_catering_equip,  transpo_equip,  linens_uniforms,  nursery_greenhouse,  leashold_rights_improvements,  construction_progress,  other_property_plant_equip ];
+
+      const total_property_plant_equip = {
+        balance_beg: 0,
+        additions: 0,
+        disposal: 0,
+        total: 0,
+        impairment_loss: 0,
+        accumulated_depreciation: 0,
+        balance_end: 0,
       };
 
-      const total_financial_assets = format.addAnything(safeNumbers.financial_alue_profit_loss, safeNumbers.financial_asset_cost);
-
-      // convert the array of key-value pairs to an object with a nested structure
-      const schedule_3 = await {
-        financial_asset_fair_value_profit_loss: safeNumbers.financial_alue_profit_loss,
-        financial_asset_cost: safeNumbers.financial_asset_cost,
-        total_financial_assets: total_financial_assets.toFixed(2)
+      for (const value of valueVariables) {
+        total_property_plant_equip.balance_beg += value.balance_beg;
+        total_property_plant_equip.additions += value.additions;
+        total_property_plant_equip.disposal += value.disposal;
+        total_property_plant_equip.total += value.total;
+        total_property_plant_equip.impairment_loss += value.impairment_loss;
+        total_property_plant_equip.accumulated_depreciation += value.accumulated_depreciation;
+        total_property_plant_equip.balance_end += value.balance_end;
       }
+      
+      const schedule_9 = {
+        land_improvements,  land,  building_improvements,  building_leased_land,  utility_plant,  prop_plant_equip_under_finance,  ffe,  mte,  kitchen_canteen_catering_equip,  transpo_equip,  linens_uniforms,  nursery_greenhouse,  leashold_rights_improvements, construction_progress,  other_property_plant_equip, total_property_plant_equip
+      };
 
       // Validate if schedule exist in our database
-      checkSchedule(reg_no, report_year, 'schedule_3', schedule_3, res, req);
+      checkSchedule(reg_no, report_year, 'schedule_9', schedule_9, res, req);
 
     }
 
@@ -310,13 +273,13 @@ router.post("/sched/3", async (req, res) => {
   }
   // Our logic ends here
 });
-//-- SUBMIT SCHEDULE 3 END--
+//-- SUBMIT SCHEDULE 9 END--
 
-//-- SUBMIT SCHEDULE 4 START--
-router.post("/sched/4", async (req, res) => {
+//-- SUBMIT SCHEDULE 10 START--
+router.post("/sched/10", async (req, res) => {
   // Our submit capr logic starts here
   // Get capr input data
-  const { reg_no, report_year, merchandise_inven, repossessed_inven, spare_parts_other_goods_inven, raw_materials_inven, work_process_inven, finished_goods_inven, agri_produce, equipment_lease_inven, less_allowance_impairment } = req.body;
+  const { reg_no, report_year, animals_bio, less_accu_depre_animals, plants_bio, less_accu_depre_plants } = req.body;
 
   try {
     // Validate capr input
@@ -327,76 +290,29 @@ router.post("/sched/4", async (req, res) => {
 
       // create a new object with the safe numbers from the request body
       const safeNumbers = {
-        merchandise_inven: format.zeroHandler(merchandise_inven),
-        repossessed_inven: format.zeroHandler(repossessed_inven),
-        spare_parts_other_goods_inven: format.zeroHandler(spare_parts_other_goods_inven),
-        raw_materials_inven: format.zeroHandler(raw_materials_inven),
-        work_process_inven: format.zeroHandler(work_process_inven),
-        finished_goods_inven: format.zeroHandler(finished_goods_inven),
-        agri_produce: format.zeroHandler(agri_produce),
-        equipment_lease_inven: format.zeroHandler(equipment_lease_inven),
-        less_allowance_impairment: format.zeroHandler(less_allowance_impairment)
-      };
-
-      const total_inventories = format.addAnything(safeNumbers.merchandise_inven, safeNumbers.repossessed_inven, safeNumbers.spare_parts_other_goods_inven, safeNumbers.raw_materials_inven, safeNumbers.work_process_inven, safeNumbers.finished_goods_inven, safeNumbers.agri_produce, safeNumbers.equipment_lease_inven) - safeNumbers.less_allowance_impairment;
-
-      // convert the array of key-value pairs to an object with a nested structure
-      const schedule_4 = await {
-        merchandise_inven: safeNumbers.merchandise_inven,
-        repossessed_inven: safeNumbers.repossessed_inven,
-        spare_parts_other_goods_inven: safeNumbers.spare_parts_other_goods_inven,
-        raw_materials_inven: safeNumbers.raw_materials_inven,
-        work_process_inven: safeNumbers.work_process_inven,
-        finished_goods_inven: safeNumbers.finished_goods_inven,
-        agri_produce: safeNumbers.agri_produce,
-        equipment_lease_inven: safeNumbers.equipment_lease_inven,
-        less_allowance_impairment: safeNumbers.less_allowance_impairment,
-        total_inventories: total_inventories.toFixed(2)
-      }
-
-      // Validate if schedule exist in our database and update data
-      checkSchedule(reg_no, report_year, 'schedule_4', schedule_4, res, req);
-
-    }
-
-  } catch (err) {
-    console.log(err);
-    Sentry.captureException(err);
-  }
-  // Our logic ends here
-});
-//-- SUBMIT SCHEDULE 4 END--
-
-//-- SUBMIT SCHEDULE 5 START--
-router.post("/sched/5", async (req, res) => {
-  // Our submit capr logic starts here
-  // Get capr input data
-  const { reg_no, report_year, plants_bio, animals_bio } = req.body;
-
-  try {
-    // Validate capr input
-    if (!reg_no || !report_year || report_year < 2021) {
-      const obj = ["registration number or report year might be null or empty", "Only 2021 and above report years are only accepted."];
-      res.status(200).json(format.apiResponse("error", "Please provide input.", obj));
-    } else {
-
-      // create a new object with the safe numbers from the request body
-      const safeNumbers = {
-        plants_bio: format.zeroHandler(plants_bio),
         animals_bio: format.zeroHandler(animals_bio),
+        less_accu_depre_animals: format.zeroHandler(less_accu_depre_animals), 
+        plants_bio: format.zeroHandler(plants_bio), 
+        less_accu_depre_plants: format.zeroHandler(less_accu_depre_plants),
       };
 
-      const total_bio = format.addAnything(safeNumbers.plants_bio, safeNumbers.animals_bio);
+      const animals_net = safeNumbers.animals_bio - safeNumbers.less_accu_depre_animals;
+      const plants_net = safeNumbers.plants_bio - safeNumbers.less_accu_depre_plants;
+      const total_bio = animals_net + plants_net;
 
       // convert the array of key-value pairs to an object with a nested structure
-      const schedule_5 = await {
-        plants_bio: safeNumbers.plants_bio,
+      const schedule_10 = {
         animals_bio: safeNumbers.animals_bio,
-        total_bio: total_bio.toFixed(2)
+        less_accu_depre_animals: safeNumbers.less_accu_depre_animals,
+        animals_net: animals_net,
+        plants_bio: safeNumbers.plants_bio,
+        less_accu_depre_plants: safeNumbers.less_accu_depre_plants,
+        plants_net: plants_net,
+        total_bio: Number(total_bio.toFixed(2))
       }
 
       // Validate if schedule exist in our database and update data
-      checkSchedule(reg_no, report_year, 'schedule_5', schedule_5, res, req);
+      checkSchedule(reg_no, report_year, 'schedule_10', schedule_10, res, req);
 
     }
 
@@ -406,15 +322,13 @@ router.post("/sched/5", async (req, res) => {
   }
   // Our logic ends here
 });
-//-- SUBMIT SCHEDULE 5 END--
+//-- SUBMIT SCHEDULE 10 END--
 
-
-
-//-- SUBMIT SCHEDULE 6 START--
-router.post("/sched/6", async (req, res) => {
+//-- SUBMIT SCHEDULE 11 START--
+router.post("/sched/11", async (req, res) => {
   // Our submit capr logic starts here
   // Get capr input data
-  const { reg_no, report_year, input_tax, creditable_vat, creditable_witholding, deposit_suppliers, unused_supplies, asset_acqui_settl_loans_acc, less_accu_depreciation_impairment, prepared_expenses, other_current_assets } = req.body;
+  const { reg_no, report_year, franchise, franchise_cost, copyright, patent } = req.body;
 
   try {
     // Validate capr input
@@ -425,35 +339,25 @@ router.post("/sched/6", async (req, res) => {
 
       // create a new object with the safe numbers from the request body
       const safeNumbers = {
-        input_tax: format.zeroHandler(input_tax),
-        creditable_vat: format.zeroHandler(creditable_vat),
-        creditable_witholding: format.zeroHandler(creditable_witholding),
-        deposit_suppliers: format.zeroHandler(deposit_suppliers),
-        unused_supplies: format.zeroHandler(unused_supplies),
-        asset_acqui_settl_loans_acc: format.zeroHandler(asset_acqui_settl_loans_acc),
-        less_accu_depreciation_impairment: format.zeroHandler(less_accu_depreciation_impairment),
-        prepared_expenses: format.zeroHandler(prepared_expenses),
-        other_current_assets: format.zeroHandler(other_current_assets)
+        franchise: format.zeroHandler(franchise),
+        franchise_cost: format.zeroHandler(franchise_cost),
+        copyright: format.zeroHandler(copyright),
+        patent: format.zeroHandler(patent),
       };
 
-      const total_other_current = format.addAnything(safeNumbers.input_tax, safeNumbers.creditable_vat, safeNumbers.creditable_witholding, safeNumbers.deposit_suppliers, safeNumbers.unused_supplies, safeNumbers.asset_acqui_settl_loans_acc) - safeNumbers.less_accu_depreciation_impairment + safeNumbers.prepared_expenses + safeNumbers.other_current_assets;
+      const total_intagible = format.addAnything(safeNumbers.franchise, safeNumbers.franchise_cost, safeNumbers.copyright, safeNumbers.patent);
 
       // convert the array of key-value pairs to an object with a nested structure
-      const schedule_6 = await {
-        input_tax: safeNumbers.input_tax,
-        creditable_vat: safeNumbers.creditable_vat,
-        creditable_witholding: safeNumbers.creditable_witholding,
-        deposit_suppliers: safeNumbers.deposit_suppliers,
-        unused_supplies: safeNumbers.unused_supplies,
-        asset_acqui_settl_loans_acc: safeNumbers.asset_acqui_settl_loans_acc,
-        less_accu_depreciation_impairment: safeNumbers.less_accu_depreciation_impairment,
-        prepared_expenses: safeNumbers.prepared_expenses,
-        other_current_assets: safeNumbers.other_current_assets,
-        total_other_current: total_other_current.toFixed(2)
+      const schedule_11 = await {
+        franchise: safeNumbers.franchise,
+        franchise_cost: safeNumbers.franchise_cost,
+        copyright: safeNumbers.copyright,
+        patent: safeNumbers.patent,
+        total_intagible: Number(total_intagible.toFixed(2))
       }
 
       // Validate if schedule exist in our database and update data
-      checkSchedule(reg_no, report_year, 'schedule_6', schedule_6, res, req);
+      checkSchedule(reg_no, report_year, 'schedule_11', schedule_11, res, req);
 
     }
 
@@ -463,7 +367,58 @@ router.post("/sched/6", async (req, res) => {
   }
   // Our logic ends here
 });
-//-- SUBMIT SCHEDULE 6 END--
+//-- SUBMIT SCHEDULE 11 END--
+
+
+
+//-- SUBMIT SCHEDULE 12 START--
+router.post("/sched/12", async (req, res) => {
+  // Our submit capr logic starts here
+  // Get capr input data
+  const { reg_no, report_year, comput_cost_net, other_fund_depo, finance_lease_receiv, due_from_head_office, deposit_on_returnable_container, misscell_assets } = req.body;
+
+  try {
+    // Validate capr input
+    if (!reg_no || !report_year || report_year < 2021) {
+      const obj = ["registration number or report year might be null or empty", "Only 2021 and above report years are only accepted."];
+      res.status(200).json(format.apiResponse("error", "Please provide input.", obj));
+    } else {
+
+      // create a new object with the safe numbers from the request body
+      const safeNumbers = {
+        comput_cost_net: format.zeroHandler(comput_cost_net),
+        other_fund_depo: format.zeroHandler(other_fund_depo),
+        finance_lease_receiv: format.zeroHandler(finance_lease_receiv),
+        due_from_head_office: format.zeroHandler(due_from_head_office),
+        deposit_on_returnable_container: format.zeroHandler(deposit_on_returnable_container),
+        misscell_assets: format.zeroHandler(misscell_assets),
+      };
+
+      const total_other_non_cur_asset = format.addAnything(safeNumbers.comput_cost_net, safeNumbers.other_fund_depo, safeNumbers.finance_lease_receiv, safeNumbers.due_from_head_office, safeNumbers.deposit_on_returnable_container, safeNumbers.misscell_assets);
+
+      // convert the array of key-value pairs to an object with a nested structure
+      const schedule_12 = await {
+        comput_cost_net: safeNumbers.comput_cost_net,
+        other_fund_depo: safeNumbers.other_fund_depo,
+        finance_lease_receiv: safeNumbers.finance_lease_receiv,
+        due_from_head_office: safeNumbers.due_from_head_office,
+        deposit_on_returnable_container: safeNumbers.deposit_on_returnable_container,
+        misscell_assets: safeNumbers.misscell_assets,
+        total_other_non_cur_asset: Number(total_other_non_cur_asset.toFixed(2))
+      }
+
+      // Validate if schedule exist in our database and update data
+      checkSchedule(reg_no, report_year, 'schedule_12', schedule_12, res, req);
+
+    }
+
+  } catch (err) {
+    console.log(err);
+    Sentry.captureException(err);
+  }
+  // Our logic ends here
+});
+//-- SUBMIT SCHEDULE 12 END--
 
 
   // ============================ END OF SCHEDULE SCRIPTS ============================

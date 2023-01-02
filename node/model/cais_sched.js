@@ -161,7 +161,7 @@ const set_2 = new mongoose.Schema({
         }
     },
     schedule_9: {
-        property_plant_equipment: {
+        land_improvements: {
             balance_beg: { type: Number, decimal: true, integer: false, default: null  },
             additions: { type: Number, decimal: true, integer: false, default: null  },
             disposal: { type: Number, decimal: true, integer: false, default: null  },
@@ -216,6 +216,15 @@ const set_2 = new mongoose.Schema({
             balance_end: { type: Number, decimal: true, integer: false, default: null  },
         },
         ffe: {
+            balance_beg: { type: Number, decimal: true, integer: false, default: null  },
+            additions: { type: Number, decimal: true, integer: false, default: null  },
+            disposal: { type: Number, decimal: true, integer: false, default: null  },
+            total: { type: Number, decimal: true, integer: false, default: null  },
+            impairment_loss: { type: Number, decimal: true, integer: false, default: null  },
+            accumulated_depreciation: { type: Number, decimal: true, integer: false, default: null  },
+            balance_end: { type: Number, decimal: true, integer: false, default: null  },
+        },
+        mte: {
             balance_beg: { type: Number, decimal: true, integer: false, default: null  },
             additions: { type: Number, decimal: true, integer: false, default: null  },
             disposal: { type: Number, decimal: true, integer: false, default: null  },
@@ -329,7 +338,7 @@ const non_current_assets = mongoose.model("afs_set_2", set_2);
 const set_3 = new mongoose.Schema({
     reg_no: String,
     report_year: { type: Number, min:2021, max: 9999 },
-    submit_status: { type: Boolean, default: true},
+    submit_status: { type: Boolean, default: false},
     date_submitted: { type: Date, default: () => moment().toDate() },
     schedule_13: {
         saving_depost: { type: Number, decimal: true, integer: false, default: null  },
@@ -362,6 +371,7 @@ const set_3 = new mongoose.Schema({
         advances_customer: { type: Number, decimal: true, integer: false, default: null  },
         school_program_support_fund_pay: { type: Number, decimal: true, integer: false, default: null  },
         intereset_share_capital_pay: { type: Number, decimal: true, integer: false, default: null  },
+        patronage_refund_payable: { type: Number, decimal: true, integer: false, default: null  },
         due_union_fed_cetf: { type: Number, decimal: true, integer: false, default: null  },
         other_current_liab: { type: Number, decimal: true, integer: false, default: null  },
         total_other_current_liab: { type: Number, decimal: true, integer: false, default: null  },
@@ -373,7 +383,7 @@ const liabilities = mongoose.model("afs_set_3", set_3);
 const set_4 = new mongoose.Schema({
     reg_no: String,
     report_year: { type: Number, min:2021, max: 9999 },
-    submit_status: { type: Boolean, default: true},
+    submit_status: { type: Boolean, default: false},
     date_submitted: { type: Date, default: () => moment().toDate() },
     schedule_17: {
         loan_pay: { type: Number, decimal: true, integer: false, default: null  },
@@ -400,12 +410,10 @@ const non_current_liabilities = mongoose.model("afs_set_4", set_4);
 const set_5 = new mongoose.Schema({
     reg_no: String,
     report_year: { type: Number, min:2021, max: 9999 },
-    submit_status: { type: Boolean, default: true},
+    submit_status: { type: Boolean, default: false},
     date_submitted: { type: Date, default: () => moment().toDate() },
     schedule_20: {
         authorized_share_common: { type: Number, decimal: true, integer: false, default: null  },
-        less_discount_loans_pay: { type: Number, decimal: true, integer: false, default: null  },
-        loans_pay_net: { type: Number, decimal: true, integer: false, default: null  },
         par_value_per_share: { type: Number, decimal: true, integer: false, default: null  },
         subscribed_common: { type: Number, decimal: true, integer: false, default: null  },
         paid_up_common: { type: Number, decimal: true, integer: false, default: null  },
@@ -420,7 +428,7 @@ const set_5 = new mongoose.Schema({
         treasury_pref: { type: Number, decimal: true, integer: false, default: null  },
         total_paid_up_pref: { type: Number, decimal: true, integer: false, default: null  },
     },
-    schdele_22: {
+    schedule_22: {
         reserve_fund: {
             balance_beg: { type: Number, decimal: true, integer: false, default: null  },
             current_year_alloc: { type: Number, decimal: true, integer: false, default: null  },
@@ -465,13 +473,12 @@ const member_equity = mongoose.model("afs_set_5", set_5);
 const set_6 = new mongoose.Schema({
     reg_no: String,
     report_year: { type: Number, min:2021, max: 9999 },
-    submit_status: { type: Boolean, default: true},
+    submit_status: { type: Boolean, default: false},
     date_submitted: { type: Date, default: () => moment().toDate() },
     schedule_23: {
         interest_income_loans: { type: Number, decimal: true, integer: false, default: null  },
         services_fees: { type: Number, decimal: true, integer: false, default: null  },
         filling_fees: { type: Number, decimal: true, integer: false, default: null  },
-        par_value_per_share: { type: Number, decimal: true, integer: false, default: null  },
         fines_penalties_surcharges: { type: Number, decimal: true, integer: false, default: null  },
         total_income_credit_op: { type: Number, decimal: true, integer: false, default: null  },
     },
@@ -480,10 +487,11 @@ const set_6 = new mongoose.Schema({
         interest_income_lease_agree: { type: Number, decimal: true, integer: false, default: null  },
         total_revenues: { type: Number, decimal: true, integer: false, default: null  },
         less_cost_service: { type: Number, decimal: true, integer: false, default: null  },
+        gross_rev_service_op: { type: Number, decimal: true, integer: false, default: null  },
         less_operating_expenses: { type: Number, decimal: true, integer: false, default: null  },
         income_service_op: { type: Number, decimal: true, integer: false, default: null  },
     },
-    schdele_25: {
+    schedule_25: {
         sales: { type: Number, decimal: true, integer: false, default: null  },
         installment_sales: { type: Number, decimal: true, integer: false, default: null  },
         less_sales_return_allowances: { type: Number, decimal: true, integer: false, default: null  },
@@ -494,7 +502,7 @@ const set_6 = new mongoose.Schema({
         less_operating_expenses: { type: Number, decimal: true, integer: false, default: null  },
         less_income_marketing_op: { type: Number, decimal: true, integer: false, default: null  },
     },
-    schdele_26: {
+    schedule_26: {
         sales: { type: Number, decimal: true, integer: false, default: null  },
         less_sales_return_allowances: { type: Number, decimal: true, integer: false, default: null  },
         less_sales_discount: { type: Number, decimal: true, integer: false, default: null  },
@@ -504,7 +512,7 @@ const set_6 = new mongoose.Schema({
         less_operating_expenses: { type: Number, decimal: true, integer: false, default: null  },
         less_income_consum_catering_op: { type: Number, decimal: true, integer: false, default: null  },
     },
-    schdele_27: {
+    schedule_27: {
         sales: { type: Number, decimal: true, integer: false, default: null  },
         less_sales_return_allowances: { type: Number, decimal: true, integer: false, default: null  },
         less_sales_discount: { type: Number, decimal: true, integer: false, default: null  },
@@ -514,7 +522,7 @@ const set_6 = new mongoose.Schema({
         less_operating_expenses: { type: Number, decimal: true, integer: false, default: null  },
         less_income_production_op: { type: Number, decimal: true, integer: false, default: null  },
     },
-    schdele_28: {
+    schedule_28: {
         income_interest_invest_deposits: { type: Number, decimal: true, integer: false, default: null  },
         membership_fee: { type: Number, decimal: true, integer: false, default: null  },
         commission_income: { type: Number, decimal: true, integer: false, default: null  },
@@ -529,7 +537,7 @@ const so_revenue = mongoose.model("afs_set_6", set_6);
 const set_7 = new mongoose.Schema({
     reg_no: String,
     report_year: { type: Number, min:2021, max: 9999 },
-    submit_status: { type: Boolean, default: true},
+    submit_status: { type: Boolean, default: false},
     date_submitted: { type: Date, default: () => moment().toDate() },
     schedule_29: {
         interest_expense_borrow: { type: Number, decimal: true, integer: false, default: null  },
@@ -606,22 +614,7 @@ const set_7 = new mongoose.Schema({
         trainings_seminars: { type: Number, decimal: true, integer: false, default: null  },
         travel_transport: { type: Number, decimal: true, integer: false, default: null  },
         total_admin_cost: { type: Number, decimal: true, integer: false, default: null  },
-    },
-    schdele_32: {
-        project_subsidy: { type: Number, decimal: true, integer: false, default: null  },
-        donation_grand_subsidy: { type: Number, decimal: true, integer: false, default: null  },
-        gains_sale_proeprty_equipment: { type: Number, decimal: true, integer: false, default: null  },
-        gains_investment: { type: Number, decimal: true, integer: false, default: null  },
-        gains_sale_repossessed_item: { type: Number, decimal: true, integer: false, default: null  },
-        gains_foreign_exchange_valuation: { type: Number, decimal: true, integer: false, default: null  },
-        subsidized_project_expense: { type: Number, decimal: true, integer: false, default: null  },
-        losses_sale_property_equip: { type: Number, decimal: true, integer: false, default: null  },
-        losses_investment: { type: Number, decimal: true, integer: false, default: null  },
-        losses_sale_repossessed_item: { type: Number, decimal: true, integer: false, default: null  },
-        losses_foreign_exchange_valuation: { type: Number, decimal: true, integer: false, default: null  },
-        prior_year_adjustment: { type: Number, decimal: true, integer: false, default: null  },
-        total_other_items: { type: Number, decimal: true, integer: false, default: null  },
-    },
+    }
 });
 
 const so_expense = mongoose.model("afs_set_7", set_7);
@@ -629,11 +622,12 @@ const so_expense = mongoose.model("afs_set_7", set_7);
 const set_8 = new mongoose.Schema({
     reg_no: String,
     report_year: { type: Number, min:2021, max: 9999 },
-    submit_status: { type: Boolean, default: true},
+    submit_status: { type: Boolean, default: false},
     date_submitted: { type: Date, default: () => moment().toDate() },
-    schdele_32: {
+    schedule_32: {
         project_subsidy: { type: Number, decimal: true, integer: false, default: null  },
         donation_grand_subsidy: { type: Number, decimal: true, integer: false, default: null  },
+        optional_fund_sb: { type: Number, decimal: true, integer: false, default: null  },
         gains_sale_proeprty_equipment: { type: Number, decimal: true, integer: false, default: null  },
         gains_investment: { type: Number, decimal: true, integer: false, default: null  },
         gains_sale_repossessed_item: { type: Number, decimal: true, integer: false, default: null  },
